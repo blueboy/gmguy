@@ -1,0 +1,36 @@
+Overview of 'GMGuy' (Original idea by tyrael)
+-------------------
+
+gmguy is a new chat command enabling players to resolve routine maintenance tasks which would otherwise done by the server admin.
+
+(Please note that the use of this command is fully controlled by the server admin and does not pose a security risk).
+
+The command can be enabled/disabled only by the server admin in the mangosd.conf file.
+
+#    GMGuy.Active
+#        player access to .gmguy command
+#        Default: 0  -  Disabled
+#                 1  -  Enabled
+
+GMGuy sub-commands
+------------------
+
+[quest] Auto-complete selected quests syntax:
+
+.gmguy quest [Milly's Harvest]
+
+To select the [Quest Link] <Shift Click> on the quest from the client objectives menu.
+
+This will enable players to autocomplete selective quests, known to give problems in normal completion. The server admin will
+control which quests can be autocompleted by listing them again in mangosd.conf
+
+#    GMGuy.AutoCompleteQuests
+#        List of available quests that the player can auto-complete
+#        List must be enclosed in double quotes ("") and multiple Quest Ids separated by a delimiter(,)
+#        Example: "7,15,21,33,18,6,3904,1598"
+#        Default: "" - None
+
+The example list above will allow players with a human faction character to autocomplete all trial quests in 'Northshire'.
+The quest sub-command utilizes the core command 'HandleQuestCompleteCommand' to provide the character with what it requires
+to normally complete the quest. The character will still need to visit the appropriate 'questgiver' and collect the reward
+to continue the quest chain.

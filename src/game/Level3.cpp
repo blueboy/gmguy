@@ -7140,3 +7140,146 @@ bool ChatHandler::HandleModifyGenderCommand(char *args)
 
     return true;
 }
+
+bool ChatHandler::HandleGMBotCommand(char* args)
+{
+    // get gmguy command
+    char* cmdStr = ExtractOptNotLastArg(&args);
+
+    // check if gmguy is enabled or not
+    if (!(m_session->GetSecurity() > SEC_PLAYER))
+        if (!sConfig.GetBoolDefault("GMGuy.Active", false))
+        {
+            PSendSysMessage("|cffff0000GMGuy is currently disabled!");
+            SetSentErrorMessage(true);
+            return false;
+        }
+
+    // check gmguy syntax
+    if (!cmdStr)
+    {
+        PSendSysMessage("|cffff0000usage: quest <SHIFT-CLICK> [Quest Link]");
+        SetSentErrorMessage(true);
+        return false;
+    }
+
+    // get player guid
+    Player* pl = m_session->GetPlayer();
+
+    ObjectGuid guid = pl->GetObjectGuid();
+    if(!guid)
+    {
+        SendSysMessage(LANG_PLAYER_NOT_FOUND);
+        SetSentErrorMessage(true);
+        return false;
+    }
+
+    // retrieve id for quests that can be autocompleted
+    std::string acQuestIds = sConfig.GetStringDefault("GMGuy.AutoCompleteQuests","");
+    if (acQuestIds == "")
+    {
+        PSendSysMessage("|cffff0000No quests can currently be autocompleted!");
+        SetSentErrorMessage(true);
+        return false;
+    }
+
+    // debug info can be commented out
+    // PSendSysMessage("|cffff0000 AutoCompleteQuests (%s)",acQuestIds.c_str());
+    // PSendSysMessage("|cffff0000 Player guid (%u)",guid.GetCounter());
+
+    // get quest entry from [Quest Link]
+    // |color|Hquest:quest_id:quest_level|h[name]|h|r   - client, quest list name shift-click
+    uint32 entry;
+    if (!ExtractUint32KeyFromLink(&args, "Hquest", entry))
+        return false;
+
+    // debug info can be commented out
+    // PSendSysMessage("|cffff0000 Quest Link entry (%u)",entry);
+
+    // Compare quest entry from [Quest Link] with quest ids listed in mangosd.conf
+    // if found the quest is autocompleted
+    if (acQuestIds != "")
+    {
+        unsigned int pos = 0;
+        unsigned int id;
+        std::string confString(acQuestIds);
+        pl->ChompTrim(confString);
+        while (pl->getNextACQuestId(confString, pos, id))
+            if (id == entry)
+            {
+                Quest const* pQuest = sObjectMgr.GetQuestTemplate(entry);
+
+                // If player doesn't have the quest
+                if (!pQuest || pl->GetQuestStatus(entry) == QUEST_STATUS_NONE)
+                {
+                    PSendSysMessage(LANG_COMMAND_QUEST_NOTFOUND, entry);
+                    SetSentErrorMessage(true);
+                    return false;
+                }
+
+                // Add quest items for quests that require items
+                for(uint8 x = 0; x < QUEST_ITEM_OBJECTIVES_COUNT; ++x)
+                {
+                    uint32 id = pQuest->ReqItemId[x];
+                    uint32 count = pQuest->ReqItemCount[x];
+                    if (!id || !count)
+                        continue;
+
+                    uint32 curItemCount = pl->GetItemCount(id,true);
+
+                    ItemPosCountVec dest;
+                    uint8 msg = pl->CanStoreNewItem( NULL_BAG, NULL_SLOT, dest, id, count - curItemCount );
+                    if (msg == EQUIP_ERR_OK)
+                    {
+                        Item* item = pl->StoreNewItem( dest, id, true);
+                        pl->SendNewItem(item,count-curItemCount, true, false);
+                    }
+                }
+
+                // All creature/GO slain/casted (not required, but otherwise it will display "Creature slain 0/10")
+                for(uint8 i = 0; i < QUEST_OBJECTIVES_COUNT; ++i)
+                {
+                    int32 creature = pQuest->ReqCreatureOrGOId[i];
+                    uint32 creaturecount = pQuest->ReqCreatureOrGOCount[i];
+
+                    if (uint32 spell_id = pQuest->ReqSpell[i])
+                    {
+                        for(uint16 z = 0; z < creaturecount; ++z)
+                            pl->CastedCreatureOrGO(creature, ObjectGuid(), spell_id);
+                    }
+                    else if (creature > 0)
+                    {
+                        if (CreatureInfo const* cInfo = ObjectMgr::GetCreatureTemplate(creature))
+                            for(uint16 z = 0; z < creaturecount; ++z)
+                                pl->KilledMonster(cInfo, ObjectGuid());
+                    }
+                    else if (creature < 0)
+                    {
+                        for(uint16 z = 0; z < creaturecount; ++z)
+                            pl->CastedCreatureOrGO(-creature, ObjectGuid(), 0);
+                    }
+                }
+
+                // If the quest requires reputation to complete
+                if(uint32 repFaction = pQuest->GetRepObjectiveFaction())
+                {
+                    uint32 repValue = pQuest->GetRepObjectiveValue();
+                    uint32 curRep = pl->GetReputationMgr().GetReputation(repFaction);
+                    if (curRep < repValue)
+                        if (FactionEntry const *factionEntry = sFactionStore.LookupEntry(repFaction))
+                            pl->GetReputationMgr().SetReputation(factionEntry,repValue);
+                }
+
+                // If the quest requires money
+                int32 ReqOrRewMoney = pQuest->GetRewOrReqMoney();
+                if (ReqOrRewMoney < 0)
+                    pl->ModifyMoney(-ReqOrRewMoney);
+
+                pl->CompleteQuest(entry);
+                return true;
+            }
+    }
+    PSendSysMessage("|cffff0000Sorry that quest can not be autocompleted!");
+    SetSentErrorMessage(true);
+    return false;
+}

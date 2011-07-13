@@ -23047,3 +23047,43 @@ void Player::SetRestType( RestType n_r_type, uint32 areaTriggerId /*= 0*/)
             SetFFAPvP(false);
     }
 }
+
+void Player::ChompTrim(std::string& str)
+{
+    while (str.length() > 0)
+    {
+        char lc = str[str.length() - 1];
+        if (lc == '\r' || lc == '\n' || lc == ' ' || lc == '"' || lc == '\'')
+            str = str.substr(0, str.length() - 1);
+        else
+            break;
+        while (str.length() > 0)
+        {
+            char lc = str[0];
+            if (lc == ' ' || lc == '"' || lc == '\'')
+                str = str.substr(1, str.length() - 1);
+            else
+                break;
+        }
+    }
+}
+
+bool Player::getNextACQuestId(const std::string& pString, unsigned int& pStartPos, unsigned int& pId)
+{
+    bool result = false;
+    unsigned int i;
+    for (i = pStartPos; i < pString.size(); ++i)
+    {
+        if (pString[i] == ',')
+            break;
+    }
+    if (i > pStartPos)
+    {
+        std::string idString = pString.substr(pStartPos, i - pStartPos);
+        pStartPos = i + 1;
+        ChompTrim(idString);
+        pId = atoi(idString.c_str());
+        result = true;
+    }
+    return(result);
+}

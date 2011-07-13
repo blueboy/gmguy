@@ -1639,3 +1639,20 @@ SOAP.Port = 7878
 CharDelete.Method = 0
 CharDelete.MinLevel = 0
 CharDelete.KeepDays = 30
+
+###################################################################################################################
+#    GMGuy.Active
+#        player access to .gmguy command
+#        Default: 0  -  Disabled
+#                 1  -  Enabled
+#
+#    GMGuy.AutoCompleteQuests
+#        List of available quests that the player can auto-complete
+#        List must be enclosed in double quotes ("") and multiple Quest Ids separated by a delimiter(,)
+#        Example: "7,15,21,33,18,6,3904,1598"
+#        Default: "" - None
+#
+###################################################################################################################
+
+GMGuy.Active = 0
+GMGuy.AutoCompleteQuests = ""
