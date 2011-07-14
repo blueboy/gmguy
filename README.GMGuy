@@ -15,22 +15,35 @@ The command can be enabled/disabled only by the server admin in the mangosd.conf
 GMGuy sub-commands
 ------------------
 
-[quest] Auto-complete selected quests syntax:
+[quest] Auto-complete selected quests
 
-.gmguy quest [Milly's Harvest]
+syntax: .gmguy quest [Milly's Harvest] or Quest ID (i.e 3904)
 
 To select the [Quest Link] <Shift Click> on the quest from the client objectives menu.
 
-This will enable players to autocomplete selective quests, known to give problems in normal completion. The server admin will
-control which quests can be autocompleted by listing them again in mangosd.conf
+This will enable players to autocomplete selective quests, known to give problems in normal completion. The server admins can now
+remotely manage data, that is stored in a dedicated table 'gmguy' in the character database. (For Admins only: gmguy.sql is provided
+to create the gmguy table and fill it with example data; 
 
-#    GMGuy.AutoCompleteQuests
-#        List of available quests that the player can auto-complete
-#        List must be enclosed in double quotes ("") and multiple Quest Ids separated by a delimiter(,)
-#        Example: "7,15,21,33,18,6,3904,1598"
-#        Default: "" - None
 
-The example list above will allow players with a human faction character to autocomplete all trial quests in 'Northshire'.
+INSERT INTO `gmguy` VALUES (1,7),(2,15),(3,21),(4,33),(5,18),(6,6),(7,3904),(8,1598);
+
+(Note taht this data can be removed, if not required)
+
+The example data will allow players with a human faction character to autocomplete all trial quests in 'Northshire'.
 The quest sub-command utilizes the core command 'HandleQuestCompleteCommand' to provide the character with what it requires
 to normally complete the quest. The character will still need to visit the appropriate 'questgiver' and collect the reward
 to continue the quest chain.
+
+-------------------
+
+[add] Admin command to add quest data to DB table gmguy.
+
+syntax: .gmguy add [Milly's Harvest] or 3904
+
+-------------------
+
+[delete] Admin command to delete quest data from DB table gmguy.
+
+syntax: .gmguy delete [Milly's Harvest] or 3904
+

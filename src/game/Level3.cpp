@@ -7143,25 +7143,37 @@ bool ChatHandler::HandleModifyGenderCommand(char *args)
 
 bool ChatHandler::HandleGMBotCommand(char* args)
 {
-    // get gmguy command
-    char* cmdStr = ExtractOptNotLastArg(&args);
-
     // check if gmguy is enabled or not
     if (!(m_session->GetSecurity() > SEC_PLAYER))
         if (!sConfig.GetBoolDefault("GMGuy.Active", false))
         {
-            PSendSysMessage("|cffff0000GMGuy is currently disabled!");
+            PSendSysMessage("GMGuy is currently disabled!");
             SetSentErrorMessage(true);
             return false;
         }
 
+    // get gmguy command
+    char* cmdStr = ExtractOptNotLastArg(&args);
     // check gmguy syntax
     if (!cmdStr)
     {
-        PSendSysMessage("|cffff0000usage: quest <SHIFT-CLICK> [Quest Link]");
+        PSendSysMessage("Use: .gmguy <quest | add | delete> <SHIFT-CLICK> [Quest Link] | Quest ID");
         SetSentErrorMessage(true);
         return false;
     }
+
+    std::string cmd = cmdStr;
+
+    // get quest entry from args
+    // |color|Hquest:quest_id:quest_level|h[name]|h|r   - client, quest list name shift-click
+    uint32 entry;
+    if (!ExtractUint32KeyFromLink(&args, "Hquest", entry))
+        if (!ExtractUInt32(&args, entry))
+        {
+            PSendSysMessage("No quest entry found");
+            SetSentErrorMessage(true);
+            return false;
+        }
 
     // get player guid
     Player* pl = m_session->GetPlayer();
@@ -7173,47 +7185,89 @@ bool ChatHandler::HandleGMBotCommand(char* args)
         SetSentErrorMessage(true);
         return false;
     }
-
-    // retrieve id for quests that can be autocompleted
-    std::string acQuestIds = sConfig.GetStringDefault("GMGuy.AutoCompleteQuests","");
-    if (acQuestIds == "")
-    {
-        PSendSysMessage("|cffff0000No quests can currently be autocompleted!");
-        SetSentErrorMessage(true);
-        return false;
-    }
-
     // debug info can be commented out
-    // PSendSysMessage("|cffff0000 AutoCompleteQuests (%s)",acQuestIds.c_str());
     // PSendSysMessage("|cffff0000 Player guid (%u)",guid.GetCounter());
-
-    // get quest entry from [Quest Link]
-    // |color|Hquest:quest_id:quest_level|h[name]|h|r   - client, quest list name shift-click
-    uint32 entry;
-    if (!ExtractUint32KeyFromLink(&args, "Hquest", entry))
-        return false;
-
-    // debug info can be commented out
     // PSendSysMessage("|cffff0000 Quest Link entry (%u)",entry);
 
-    // Compare quest entry from [Quest Link] with quest ids listed in mangosd.conf
-    // if found the quest is autocompleted
-    if (acQuestIds != "")
+    Quest const* pQuest = sObjectMgr.GetQuestTemplate(entry);
+
+    if((cmd == "add" || cmd == "delete") && (m_session->GetSecurity() > SEC_PLAYER))
     {
-        unsigned int pos = 0;
-        unsigned int id;
-        std::string confString(acQuestIds);
-        pl->ChompTrim(confString);
-        while (pl->getNextACQuestId(confString, pos, id))
-            if (id == entry)
+
+        if(!pQuest)
+        {
+            PSendSysMessage(LANG_COMMAND_QUEST_NOTFOUND, entry);
+            SetSentErrorMessage(true);
+            return false;
+        }
+
+        //check whether entry is already in database
+        QueryResult* result = CharacterDatabase.PQuery("SELECT autocomplete_quests FROM gmguy WHERE autocomplete_quests='%u'",entry );
+
+        if(cmd == "add")
+        {
+            if(!result)
             {
-                Quest const* pQuest = sObjectMgr.GetQuestTemplate(entry);
+                // add new entry
+                PSendSysMessage("Adding quest (%u) to table gmguy",entry);
+                CharacterDatabase.DirectPExecute("INSERT INTO gmguy (autocomplete_quests) VALUES('%u')",entry);
+                return true;
+            }
+            else
+            {
+                // entry found in table
+                PSendSysMessage("Quest (%u) already in table gmguy",entry);
+                SetSentErrorMessage(true);
+                delete result;
+                return false;
+            }
+        }
+
+        if(cmd == "delete")
+        {
+            if(result)
+            {
+                // delete entry
+                PSendSysMessage("Deleting quest (%u) from table gmguy",entry);
+                CharacterDatabase.DirectPExecute("DELETE FROM gmguy WHERE autocomplete_quests='%u'",entry);
+                delete result;
+                return true;
+            }
+            else
+            {
+                PSendSysMessage(LANG_COMMAND_QUEST_NOTFOUND, entry);
+                SetSentErrorMessage(true);
+                return false;
+            }
+        }
+    }
+    else if(cmd == "quest")
+    {
+        // Compare quest entry from [Quest Link] with quest ids listed DB table gmguy
+        // if found the quest is autocompleted
+        QueryResult *result = CharacterDatabase.PQuery("SELECT autocomplete_quests FROM gmguy");
+        if (!result)
+        {
+            PSendSysMessage("No quests can be autocompleted");
+            SetSentErrorMessage(true);
+            return false;
+        }
+
+        Field *fields;
+        do
+        {
+            fields = result->Fetch();
+            uint32 questid = fields[0].GetUInt32();
+
+            if(questid == entry)
+            {
 
                 // If player doesn't have the quest
                 if (!pQuest || pl->GetQuestStatus(entry) == QUEST_STATUS_NONE)
                 {
                     PSendSysMessage(LANG_COMMAND_QUEST_NOTFOUND, entry);
                     SetSentErrorMessage(true);
+                    delete result;
                     return false;
                 }
 
@@ -7276,10 +7330,21 @@ bool ChatHandler::HandleGMBotCommand(char* args)
                     pl->ModifyMoney(-ReqOrRewMoney);
 
                 pl->CompleteQuest(entry);
+                PSendSysMessage("Completed..!");
+                delete result;
                 return true;
             }
+        }
+        while (result->NextRow());
+        delete result;
     }
-    PSendSysMessage("|cffff0000Sorry that quest can not be autocompleted!");
+    else
+    {
+        PSendSysMessage("Only admins can to use <add | delete> sub-commands!");
+        SetSentErrorMessage(true);
+        return false;
+    }
+    PSendSysMessage("Quest (%u) can't be autocompleted (Issue, then post ticket to GM!)",entry);
     SetSentErrorMessage(true);
     return false;
 }
