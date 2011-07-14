@@ -23,7 +23,7 @@ To select the [Quest Link] <Shift Click> on the quest from the client objectives
 
 This will enable players to autocomplete selective quests, known to give problems in normal completion. The server admins can now
 remotely manage data, that is stored in a dedicated table 'gmguy' in the character database. (For Admins only: gmguy.sql is provided
-to create the gmguy table and fill it with example data; 
+to create the gmguy table and fill it with example data;
 
 
 INSERT INTO `gmguy` VALUES (1,7),(2,15),(3,21),(4,33),(5,18),(6,6),(7,3904),(8,1598);
@@ -46,4 +46,3 @@ syntax: .gmguy add [Milly's Harvest] or 3904
 [delete] Admin command to delete quest data from DB table gmguy.
 
 syntax: .gmguy delete [Milly's Harvest] or 3904
-
