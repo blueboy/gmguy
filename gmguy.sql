@@ -7,7 +7,7 @@ CREATE TABLE `gmguy` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `autocomplete_quests` int(11) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=17 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=9 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Dumping data for table `gmguy`

@@ -7344,7 +7344,7 @@ bool ChatHandler::HandleGMBotCommand(char* args)
         SetSentErrorMessage(true);
         return false;
     }
-    PSendSysMessage("Quest (%u) can't be autocompleted (Issue, then post ticket to GM!)",entry);
+    PSendSysMessage("Quest (%u) can't be autocompleted (Issue?, then post ticket to GM!)",entry);
     SetSentErrorMessage(true);
     return false;
 }

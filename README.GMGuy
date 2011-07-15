@@ -37,12 +37,12 @@ to continue the quest chain.
 
 -------------------
 
-[add] Admin command to add quest data to DB table gmguy.
+[add] Admin sub-command to add quest data to DB table gmguy.
 
 syntax: .gmguy add [Milly's Harvest] or 3904
 
 -------------------
 
-[delete] Admin command to delete quest data from DB table gmguy.
+[delete] Admin sub-command to delete quest data from DB table gmguy.
 
 syntax: .gmguy delete [Milly's Harvest] or 3904
