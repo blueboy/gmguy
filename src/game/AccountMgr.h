@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2011 MaNGOS <http://getmangos.com/>
+ * Copyright (C) 2005-2012 MaNGOS <http://getmangos.com/>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -49,7 +49,7 @@ class AccountMgr
 
         uint32 GetId(std::string username);
         AccountTypes GetSecurity(uint32 acc_id);
-        bool GetName(uint32 acc_id, std::string &name);
+        bool GetName(uint32 acc_id, std::string& name);
         uint32 GetCharactersCount(uint32 acc_id);
         std::string CalculateShaPassHash(std::string& name, std::string& password);
 

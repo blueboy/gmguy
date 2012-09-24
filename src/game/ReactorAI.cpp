@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2011 MaNGOS <http://getmangos.com/>
+ * Copyright (C) 2005-2012 MaNGOS <http://getmangos.com/>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,26 +26,26 @@
 #define REACTOR_VISIBLE_RANGE (26.46f)
 
 int
-ReactorAI::Permissible(const Creature *creature)
+ReactorAI::Permissible(const Creature* creature)
 {
-    if( creature->IsCivilian() || creature->IsNeutralToAll() )
+    if (creature->IsCivilian() || creature->IsNeutralToAll())
         return PERMIT_BASE_REACTIVE;
 
     return PERMIT_BASE_NO;
 }
 
 void
-ReactorAI::MoveInLineOfSight(Unit *)
+ReactorAI::MoveInLineOfSight(Unit*)
 {
 }
 
 void
-ReactorAI::AttackStart(Unit *p)
+ReactorAI::AttackStart(Unit* p)
 {
-    if(!p)
+    if (!p)
         return;
 
-    if(m_creature->Attack(p,true))
+    if (m_creature->Attack(p, true))
     {
         DEBUG_FILTER_LOG(LOG_FILTER_AI_AND_MOVEGENSS, "Tag unit GUID: %u (TypeId: %u) as a victim", p->GetGUIDLow(), p->GetTypeId());
         i_victimGuid = p->GetObjectGuid();
@@ -59,7 +59,7 @@ ReactorAI::AttackStart(Unit *p)
 }
 
 bool
-ReactorAI::IsVisible(Unit *) const
+ReactorAI::IsVisible(Unit*) const
 {
     return false;
 }

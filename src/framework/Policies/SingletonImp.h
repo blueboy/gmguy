@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2011 MaNGOS <http://getmangos.com/>
+ * Copyright (C) 2005-2012 MaNGOS <http://getmangos.com/>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,10 +27,10 @@
 template
 <
 typename T,
-class ThreadingModel,
-class CreatePolicy,
-class LifeTimePolicy
->
+         class ThreadingModel,
+         class CreatePolicy,
+         class LifeTimePolicy
+         >
 T& MaNGOS::Singleton<T, ThreadingModel, CreatePolicy, LifeTimePolicy>::Instance()
 {
     if (!si_instance)
@@ -57,10 +57,10 @@ T& MaNGOS::Singleton<T, ThreadingModel, CreatePolicy, LifeTimePolicy>::Instance(
 template
 <
 typename T,
-class ThreadingModel,
-class CreatePolicy,
-class LifeTimePolicy
->
+         class ThreadingModel,
+         class CreatePolicy,
+         class LifeTimePolicy
+         >
 void MaNGOS::Singleton<T, ThreadingModel, CreatePolicy, LifeTimePolicy>::DestroySingleton()
 {
     CreatePolicy::Destroy(si_instance);

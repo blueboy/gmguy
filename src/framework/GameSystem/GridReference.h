@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2011 MaNGOS <http://getmangos.com/>
+ * Copyright (C) 2005-2012 MaNGOS <http://getmangos.com/>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,21 +28,21 @@ class MANGOS_DLL_SPEC GridReference : public Reference<GridRefManager<OBJECT>, O
 {
     protected:
 
-        void targetObjectBuildLink()
+        void targetObjectBuildLink() override
         {
             // called from link()
             this->getTarget()->insertFirst(this);
             this->getTarget()->incSize();
         }
 
-        void targetObjectDestroyLink()
+        void targetObjectDestroyLink() override
         {
             // called from unlink()
             if (this->isValid())
                 this->getTarget()->decSize();
         }
 
-        void sourceObjectDestroyLink()
+        void sourceObjectDestroyLink() override
         {
             // called from invalidate()
             this->getTarget()->decSize();
@@ -60,7 +60,7 @@ class MANGOS_DLL_SPEC GridReference : public Reference<GridRefManager<OBJECT>, O
             this->unlink();
         }
 
-        GridReference *next()
+        GridReference* next()
         {
             return (GridReference*)Reference<GridRefManager<OBJECT>, OBJECT>::next();
         }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2011 MaNGOS <http://getmangos.com/>
+ * Copyright (C) 2005-2012 MaNGOS <http://getmangos.com/>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,19 +30,19 @@ class MANGOS_DLL_DECL PetAI : public CreatureAI
 {
     public:
 
-        explicit PetAI(Creature *c);
+        explicit PetAI(Creature* c);
 
-        void MoveInLineOfSight(Unit *);
-        void AttackStart(Unit *);
-        void EnterEvadeMode();
-        void AttackedBy(Unit*);
-        bool IsVisible(Unit *) const;
+        void MoveInLineOfSight(Unit*) override;
+        void AttackStart(Unit*) override;
+        void EnterEvadeMode() override;
+        void AttackedBy(Unit*) override;
+        bool IsVisible(Unit*) const override;
 
-        void UpdateAI(const uint32);
-        static int Permissible(const Creature *);
+        void UpdateAI(const uint32) override;
+        static int Permissible(const Creature*);
 
     private:
-        bool _isVisible(Unit *) const;
+        bool _isVisible(Unit*) const;
         bool _needToStop(void) const;
         void _stopAttack(void);
 
@@ -51,8 +51,7 @@ class MANGOS_DLL_DECL PetAI : public CreatureAI
         TimeTracker i_tracker;
         bool inCombat;
 
-        typedef std::set<ObjectGuid> AllySet;
-        AllySet m_AllySet;
+        GuidSet m_AllySet;
         uint32 m_updateAlliesTimer;
 };
 #endif

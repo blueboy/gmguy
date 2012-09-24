@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2011 MaNGOS <http://getmangos.com/>
+ * Copyright (C) 2005-2012 MaNGOS <http://getmangos.com/>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,8 +36,8 @@ class MANGOS_DLL_SPEC BarGoLink
         void init(int row_count);
 
         static bool m_showOutput;                           // not recommended change with existed active bar
-        static char const * const empty;
-        static char const * const full;
+        static char const* const empty;
+        static char const* const full;
 
         int rec_no;
         int rec_pos;

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2011 MaNGOS <http://getmangos.com/>
+ * Copyright (C) 2005-2012 MaNGOS <http://getmangos.com/>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,9 +22,9 @@
 
 template<class REAL_AI>
 inline CreatureAI*
-CreatureAIFactory<REAL_AI>::Create(void *data) const
+CreatureAIFactory<REAL_AI>::Create(void* data) const
 {
-    Creature* creature = reinterpret_cast<Creature *>(data);
+    Creature* creature = reinterpret_cast<Creature*>(data);
     return (new REAL_AI(creature));
 }
 #endif

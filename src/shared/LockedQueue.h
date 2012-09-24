@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2009-2011 MaNGOS <http://getmangos.com/>
+ * Copyright (C) 2009-2012 MaNGOS <http://getmangos.com/>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,17 +27,17 @@
 
 namespace ACE_Based
 {
-    template <class T, class LockType, typename StorageType=std::deque<T> >
-        class LockedQueue
+    template <class T, class LockType, typename StorageType = std::deque<T> >
+    class LockedQueue
     {
-        //! Lock access to the queue.
-        LockType _lock;
+            //! Lock access to the queue.
+            LockType _lock;
 
-        //! Storage backing the queue.
-        StorageType _queue;
+            //! Storage backing the queue.
+            StorageType _queue;
 
-        //! Cancellation flag.
-        /*volatile*/ bool _canceled;
+            //! Cancellation flag.
+            /*volatile*/ bool _canceled;
 
         public:
 
@@ -62,7 +62,7 @@ namespace ACE_Based
             //! Gets the next result in the queue, if any.
             bool next(T& result)
             {
-                ACE_GUARD_RETURN (LockType, g, this->_lock, false);
+                ACE_GUARD_RETURN(LockType, g, this->_lock, false);
 
                 if (_queue.empty())
                     return false;
@@ -76,13 +76,13 @@ namespace ACE_Based
             template<class Checker>
             bool next(T& result, Checker& check)
             {
-                ACE_GUARD_RETURN (LockType, g, this->_lock, false);
+                ACE_GUARD_RETURN(LockType, g, this->_lock, false);
 
                 if (_queue.empty())
                     return false;
 
                 result = _queue.front();
-                if(!check.Process(result))
+                if (!check.Process(result))
                     return false;
 
                 _queue.pop_front();

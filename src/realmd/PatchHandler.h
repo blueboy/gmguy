@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2011 MaNGOS <http://getmangos.com/>
+ * Copyright (C) 2005-2012 MaNGOS <http://getmangos.com/>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -63,7 +63,7 @@ class PatchCache
         }
 
         void LoadPatchMD5(const char*);
-        bool GetHash(const char * pat, ACE_UINT8 mymd5[MD5_DIGEST_LENGTH]);
+        bool GetHash(const char* pat, ACE_UINT8 mymd5[MD5_DIGEST_LENGTH]);
 
     private:
         void LoadPatchesInfo();
@@ -80,10 +80,10 @@ class PatchHandler: public ACE_Svc_Handler<ACE_SOCK_STREAM, ACE_NULL_SYNCH>
         PatchHandler(ACE_HANDLE socket, ACE_HANDLE patch);
         virtual ~PatchHandler();
 
-        int open(void* = 0);
+        int open(void* = 0) override;
 
     protected:
-        virtual int svc(void);
+        virtual int svc(void) override;
 
     private:
         ACE_HANDLE patch_fd_;

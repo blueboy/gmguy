@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2011 MaNGOS <http://getmangos.com/>
+ * Copyright (C) 2005-2012 MaNGOS <http://getmangos.com/>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,14 +17,13 @@
  */
 
 #include "SQLStorage.h"
-#include "SQLStorageImpl.h"
 
 void SQLStorage::EraseEntry(uint32 id)
 {
     uint32 offset = 0;
-    for(uint32 x = 0; x < iNumFields; ++x)
+    for (uint32 x = 0; x < oNumFields; ++x)
     {
-        switch(dst_format[x])
+        switch (dst_format[x])
         {
             case FT_LOGIC:
                 offset += sizeof(bool);   break;
@@ -36,15 +35,20 @@ void SQLStorage::EraseEntry(uint32 id)
                 offset += sizeof(float);  break;
             case FT_STRING:
             {
-                if(pIndex[id])
-                    delete [] *(char**)((char*)(pIndex[id])+offset);
+                if (pIndex[id])
+                    delete[] *(char**)((char*)(pIndex[id]) + offset);
 
                 offset += sizeof(char*);
                 break;
             }
             case FT_NA:
+                offset += sizeof(uint32); break;
             case FT_NA_BYTE:
-                break;
+                offset += sizeof(char);   break;
+            case FT_NA_FLOAT:
+                offset += sizeof(float);  break;
+            case FT_NA_POINTER:
+                offset += sizeof(char*);  break;
             case FT_IND:
             case FT_SORT:
                 assert(false && "SQL storage not have sort field types");
@@ -58,12 +62,12 @@ void SQLStorage::EraseEntry(uint32 id)
     pIndex[id] = NULL;
 }
 
-void SQLStorage::Free ()
+void SQLStorage::Free()
 {
     uint32 offset = 0;
-    for(uint32 x = 0; x < iNumFields; ++x)
+    for (uint32 x = 0; x < oNumFields; ++x)
     {
-        switch(dst_format[x])
+        switch (dst_format[x])
         {
             case FT_LOGIC:
                 offset += sizeof(bool);   break;
@@ -75,16 +79,21 @@ void SQLStorage::Free ()
                 offset += sizeof(float);  break;
             case FT_STRING:
             {
-                for(uint32 y = 0; y < MaxEntry; ++y)
-                    if(pIndex[y])
-                        delete [] *(char**)((char*)(pIndex[y])+offset);
+                for (uint32 y = 0; y < MaxEntry; ++y)
+                    if (pIndex[y])
+                        delete[] *(char**)((char*)(pIndex[y]) + offset);
 
                 offset += sizeof(char*);
                 break;
             }
             case FT_NA:
+                offset += sizeof(uint32); break;
             case FT_NA_BYTE:
-                break;
+                offset += sizeof(char);   break;
+            case FT_NA_FLOAT:
+                offset += sizeof(float);  break;
+            case FT_NA_POINTER:
+                offset += sizeof(char*);  break;
             case FT_IND:
             case FT_SORT:
                 assert(false && "SQL storage not have sort field types");
@@ -95,8 +104,8 @@ void SQLStorage::Free ()
         }
     }
 
-    delete [] pIndex;
-    delete [] data;
+    delete[] pIndex;
+    delete[] data;
 }
 
 void SQLStorage::Load()

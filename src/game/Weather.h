@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2011 MaNGOS <http://getmangos.com/>
+ * Copyright (C) 2005-2012 MaNGOS <http://getmangos.com/>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -55,8 +55,8 @@ class Weather
         ~Weather() { };
         bool ReGenerate();
         bool UpdateWeather();
-        void SendWeatherUpdateToPlayer(Player *player);
-        static void SendFineWeatherUpdateToPlayer(Player *player);
+        void SendWeatherUpdateToPlayer(Player* player);
+        static void SendFineWeatherUpdateToPlayer(Player* player);
         void SetWeather(WeatherType type, float grade);
         /// For which zone is this weather?
         uint32 GetZone() { return m_zone; };

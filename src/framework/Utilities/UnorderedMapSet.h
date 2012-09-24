@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2011 MaNGOS <http://getmangos.com/>
+ * Copyright (C) 2005-2012 MaNGOS <http://getmangos.com/>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,7 +31,7 @@
 #elif COMPILER == COMPILER_GNU && __GNUC__ >= 3
 #  include <ext/hash_map>
 #  include <ext/hash_set>
-#elif COMPILER == COMPILER_MICROSOFT && _MSC_VER >= 1500 && _HAS_TR1   // VC9.0 SP1 and later
+#elif COMPILER == COMPILER_MICROSOFT && (_MSC_VER > 1500 || _MSC_VER == 1500 && _HAS_TR1)   // VC9.0 SP1 and later
 #  include <unordered_map>
 #  include <unordered_set>
 #else
@@ -47,8 +47,8 @@
 using std::hash_map;
 using std::hash_set;
 #elif COMPILER == COMPILER_MICROSOFT && _MSC_VER >= 1600    // VS100
-#  define UNORDERED_MAP std::tr1::unordered_map
-#  define UNORDERED_SET std::tr1::unordered_set
+#  define UNORDERED_MAP std::unordered_map
+#  define UNORDERED_SET std::unordered_set
 #  define HASH_NAMESPACE_START namespace std {
 #  define HASH_NAMESPACE_END }
 #elif COMPILER == COMPILER_MICROSOFT && _MSC_VER >= 1500 && _HAS_TR1
@@ -73,7 +73,7 @@ template<class K>
 class hash
 {
     public:
-        size_t operator() (K const&);
+        size_t operator()(K const&);
 };
 
 HASH_NAMESPACE_END
@@ -100,27 +100,27 @@ using std::hash_set;
 
 HASH_NAMESPACE_START
 
-    template<>
-    class hash<unsigned long long>
-    {
-        public:
-            size_t operator()(const unsigned long long &__x) const { return (size_t)__x; }
-    };
+template<>
+class hash<unsigned long long>
+{
+    public:
+        size_t operator()(const unsigned long long& __x) const { return (size_t)__x; }
+};
 
-    template<typename T>
-    class hash<T *>
-    {
-        public:
-            size_t operator()(T * const &__x) const { return (size_t)__x; }
-    };
+template<typename T>
+class hash<T*>
+{
+    public:
+        size_t operator()(T* const& __x) const { return (size_t)__x; }
+};
 
-    template<> struct hash<std::string>
+template<> struct hash<std::string>
+{
+    size_t operator()(const std::string& __x) const
     {
-        size_t operator()(const std::string &__x) const
-        {
-            return hash<const char *>()(__x.c_str());
-        }
-    };
+        return hash<const char*>()(__x.c_str());
+    }
+};
 
 HASH_NAMESPACE_END
 

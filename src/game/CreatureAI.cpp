@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2011 MaNGOS <http://getmangos.com/>
+ * Copyright (C) 2005-2012 MaNGOS <http://getmangos.com/>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,13 +25,13 @@ CreatureAI::~CreatureAI()
 {
 }
 
-void CreatureAI::AttackedBy( Unit* attacker )
+void CreatureAI::AttackedBy(Unit* attacker)
 {
-    if(!m_creature->getVictim())
+    if (!m_creature->getVictim())
         AttackStart(attacker);
 }
 
-CanCastResult CreatureAI::CanCastSpell(Unit* pTarget, const SpellEntry *pSpell, bool isTriggered)
+CanCastResult CreatureAI::CanCastSpell(Unit* pTarget, const SpellEntry* pSpell, bool isTriggered)
 {
     // If not triggered, we check
     if (!isTriggered)
@@ -51,7 +51,7 @@ CanCastResult CreatureAI::CanCastSpell(Unit* pTarget, const SpellEntry *pSpell, 
             return CAST_FAIL_POWER;
     }
 
-    if (const SpellRangeEntry *pSpellRange = sSpellRangeStore.LookupEntry(pSpell->rangeIndex))
+    if (const SpellRangeEntry* pSpellRange = sSpellRangeStore.LookupEntry(pSpell->rangeIndex))
     {
         if (pTarget != m_creature)
         {
@@ -120,20 +120,5 @@ CanCastResult CreatureAI::DoCastSpellIfCan(Unit* pTarget, uint32 uiSpell, uint32
 
 bool CreatureAI::DoMeleeAttackIfReady()
 {
-    // Check target
-    if (!m_creature->getVictim())
-        return false;
-
-    // Make sure our attack is ready before checking distance
-    if (!m_creature->isAttackReady())
-        return false;
-
-    // If we are within range melee the target
-    if (!m_creature->CanReachWithMeleeAttack(m_creature->getVictim()))
-        return false;
-
-    m_creature->AttackerStateUpdate(m_creature->getVictim());
-    m_creature->resetAttackTimer();
-
-    return true;
+    return m_creature->UpdateMeleeAttackingState();
 }

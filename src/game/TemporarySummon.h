@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2011 MaNGOS <http://getmangos.com/>
+ * Copyright (C) 2005-2012 MaNGOS <http://getmangos.com/>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,7 +26,7 @@ class TemporarySummon : public Creature
 {
     public:
         explicit TemporarySummon(ObjectGuid summoner = ObjectGuid());
-        virtual ~TemporarySummon(){};
+        virtual ~TemporarySummon() {};
 
         void Update(uint32 update_diff, uint32 time) override;
         void Summon(TempSummonType type, uint32 lifetime);
@@ -35,11 +35,11 @@ class TemporarySummon : public Creature
         ObjectGuid const& GetSummonerGuid() const { return m_summoner ; }
         Unit* GetSummoner() const { return ObjectAccessor::GetUnit(*this, m_summoner); }
     private:
-        void SaveToDB(uint32, uint8, uint32)                // overwrited of Creature::SaveToDB     - don't must be called
+        void SaveToDB(uint32, uint8, uint32) override       // overwrited of Creature::SaveToDB     - don't must be called
         {
             MANGOS_ASSERT(false);
         }
-        void DeleteFromDB()                                 // overwrited of Creature::DeleteFromDB - don't must be called
+        void DeleteFromDB() override                        // overwrited of Creature::DeleteFromDB - don't must be called
         {
             MANGOS_ASSERT(false);
         }

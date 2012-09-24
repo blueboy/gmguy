@@ -1,11 +1,11 @@
 #ifndef AUCTION_HOUSE_BOT_H
 #define AUCTION_HOUSE_BOT_H
 
-#include "../World.h"
+#include "World.h"
 #include "Config/Config.h"
-#include "../AuctionHouseMgr.h"
-#include "../SharedDefines.h"
-#include "../Item.h"
+#include "AuctionHouseMgr.h"
+#include "SharedDefines.h"
+#include "Item.h"
 
 // shadow of ItemQualities with skipped ITEM_QUALITY_HEIRLOOM, anything after ITEM_QUALITY_ARTIFACT(6) in fact
 enum AuctionQuality
@@ -107,16 +107,17 @@ enum AuctionBotConfigBoolValues
 class AuctionBotConfig
 {
     public:
-        AuctionBotConfig() {}
+        AuctionBotConfig();
 
+        void        SetConfigFileName(char const* filename) { m_configFileName = filename; }
         bool        Initialize();
         const char* GetAHBotIncludes() const { return m_AHBotIncludes.c_str(); }
         const char* GetAHBotExcludes() const { return m_AHBotExcludes.c_str(); }
 
         uint32      getConfig(AuctionBotConfigUInt32Values index) const { return m_configUint32Values[index]; }
         bool        getConfig(AuctionBotConfigBoolValues index) const { return m_configBoolValues[index]; }
-        void        setConfig(AuctionBotConfigBoolValues index, bool value) { m_configBoolValues[index]=value; }
-        void        setConfig(AuctionBotConfigUInt32Values index, uint32 value) { m_configUint32Values[index]=value; }
+        void        setConfig(AuctionBotConfigBoolValues index, bool value) { m_configBoolValues[index] = value; }
+        void        setConfig(AuctionBotConfigUInt32Values index, uint32 value) { m_configUint32Values[index] = value; }
 
         uint32 getConfigItemAmountRatio(AuctionHouseType houseType) const;
         bool getConfigBuyerEnabled(AuctionHouseType houseType) const;
@@ -131,6 +132,7 @@ class AuctionBotConfig
         static char const* GetHouseTypeName(AuctionHouseType houseType);
 
     private:
+        std::string m_configFileName;
         std::string m_AHBotIncludes;
         std::string m_AHBotExcludes;
         Config      m_AhBotCfg;
@@ -158,8 +160,8 @@ class AuctionBotAgent
         AuctionBotAgent() {}
         virtual ~AuctionBotAgent() {}
     public:
-        virtual bool Initialize() =0;
-        virtual bool Update(AuctionHouseType houseType) =0;
+        virtual bool Initialize() = 0;
+        virtual bool Update(AuctionHouseType houseType) = 0;
 };
 
 struct AuctionHouseBotStatusInfoPerType
@@ -184,7 +186,7 @@ class AuctionHouseBot
         // Followed method is mainly used by level3.cpp for ingame/console command
         void SetItemsRatio(uint32 al, uint32 ho, uint32 ne);
         void SetItemsRatioForHouse(AuctionHouseType house, uint32 val);
-        void SetItemsAmount(uint32 (&vals) [MAX_AUCTION_QUALITY]);
+        void SetItemsAmount(uint32(&vals) [MAX_AUCTION_QUALITY]);
         void SetItemsAmountForQuality(AuctionQuality quality, uint32 val);
         bool ReloadAllConfig();
         void Rebuild(bool all);

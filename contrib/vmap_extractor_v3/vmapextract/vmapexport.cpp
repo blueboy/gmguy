@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2011 MaNGOS <http://getmangos.com/>
+ * Copyright (C) 2005-2012 MaNGOS <http://getmangos.com/>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -247,20 +247,7 @@ void ParsMapFiles()
 void getGamePath()
 {
 #ifdef _WIN32
-    HKEY key;
-    DWORD t,s;
-    LONG l;
-    s = sizeof(input_path);
-    memset(input_path,0,s);
-    l = RegOpenKeyEx(HKEY_LOCAL_MACHINE,"SOFTWARE\\Blizzard Entertainment\\World of Warcraft",0,KEY_QUERY_VALUE,&key);
-    //l = RegOpenKeyEx(HKEY_LOCAL_MACHINE,"SOFTWARE\\Blizzard Entertainment\\Burning Crusade Closed Beta",0,KEY_QUERY_VALUE,&key);
-    l = RegQueryValueEx(key,"InstallPath",0,&t,(LPBYTE)input_path,&s);
-    RegCloseKey(key);
-    if (strlen(input_path) > 0)
-    {
-        if (input_path[strlen(input_path) - 1] != '\\') strcat(input_path, "\\");
-    }
-    strcat(input_path,"Data\\");
+    strcpy(input_path,"Data\\");
 #else
     strcpy(input_path,"Data/");
 #endif

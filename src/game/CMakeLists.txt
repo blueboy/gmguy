@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2005-2011 MaNGOS project <http://getmangos.com/>
+# Copyright (C) 2005-2012 MaNGOS project <http://getmangos.com/>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -22,7 +22,11 @@ include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_SOURCE_DIR}/vmap
   ${CMAKE_CURRENT_SOURCE_DIR}/AuctionHouseBot
+  ${CMAKE_CURRENT_SOURCE_DIR}/BattleGround
+  ${CMAKE_CURRENT_SOURCE_DIR}/OutdoorPvP
   ${CMAKE_SOURCE_DIR}/dep/include/g3dlite
+  ${CMAKE_SOURCE_DIR}/dep/recastnavigation/Detour
+  ${CMAKE_SOURCE_DIR}/dep/recastnavigation/
   ${CMAKE_SOURCE_DIR}/dep/include
   ${CMAKE_SOURCE_DIR}/src/shared
   ${CMAKE_SOURCE_DIR}/src/framework
@@ -42,7 +46,7 @@ source_group("World/Handlers"
 )
 
 source_group("Motion generators"
-  REGULAR_EXPRESSION Generator|MotionMaster
+  REGULAR_EXPRESSION MoveMap|MoveMapSharedDefines|Generator|MotionMaster
 )
 
 source_group("Server"
@@ -82,6 +86,7 @@ add_library(game STATIC
 
 target_link_libraries(game
   shared
+  detour
 )
 
 if(UNIX)

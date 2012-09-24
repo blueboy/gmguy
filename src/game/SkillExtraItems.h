@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2011 MaNGOS <http://getmangos.com/>
+ * Copyright (C) 2005-2012 MaNGOS <http://getmangos.com/>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,7 +24,7 @@
 // predef classes used in functions
 class Player;
 // returns true and sets the appropriate info if the player can create extra items with the given spellId
-bool canCreateExtraItems(Player * player, uint32 spellId, float &additionalChance, uint8 &additionalMax);
+bool canCreateExtraItems(Player* player, uint32 spellId, float& additionalChance, uint8& additionalMax);
 // function to load the extra item creation info from DB
 void LoadSkillExtraItemTable();
 #endif

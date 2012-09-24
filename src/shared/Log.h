@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2011 MaNGOS <http://getmangos.com/>
+ * Copyright (C) 2005-2012 MaNGOS <http://getmangos.com/>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,25 +36,26 @@ enum LogLevel
 // bitmask (not forgot update logFilterData content)
 enum LogFilters
 {
-    LOG_FILTER_TRANSPORT_MOVES    = 0x0001,                 //  0 any related to transport moves
-    LOG_FILTER_CREATURE_MOVES     = 0x0002,                 //  1 creature move by cells
-    LOG_FILTER_VISIBILITY_CHANGES = 0x0004,                 //  2 update visibility for diff objects and players
-    LOG_FILTER_ACHIEVEMENT_UPDATES= 0x0008,                 //  3 achievement update broadcasts
-    LOG_FILTER_WEATHER            = 0x0010,                 //  4 weather changes
-    LOG_FILTER_PLAYER_STATS       = 0x0020,                 //  5 player save data
-    LOG_FILTER_SQL_TEXT           = 0x0040,                 //  6 raw SQL text send to DB engine
-    LOG_FILTER_PLAYER_MOVES       = 0x0080,                 //  7 player moves by grid/cell
-    LOG_FILTER_PERIODIC_AFFECTS   = 0x0100,                 //  8 DoT/HoT apply trace
-    LOG_FILTER_AI_AND_MOVEGENSS   = 0x0200,                 //  9 AI/movement generators debug output
-    LOG_FILTER_DAMAGE             = 0x0400,                 // 10 Direct/Area damage trace
-    LOG_FILTER_COMBAT             = 0x0800,                 // 11 attack states/roll attack results/etc
-    LOG_FILTER_SPELL_CAST         = 0x1000,                 // 12 spell cast/aura apply/spell proc events
-    LOG_FILTER_DB_STRICTED_CHECK  = 0x2000,                 // 13 stricted DB data checks output (with possible false reports) for DB devs
-    LOG_FILTER_AHBOT_SELLER       = 0x4000,                 // 14 Auction House Bot seller part
-    LOG_FILTER_AHBOT_BUYER        = 0x8000,                 // 15 Auction House Bot buyer part
+    LOG_FILTER_TRANSPORT_MOVES    = 0x000001,               //  0 any related to transport moves
+    LOG_FILTER_CREATURE_MOVES     = 0x000002,               //  1 creature move by cells
+    LOG_FILTER_VISIBILITY_CHANGES = 0x000004,               //  2 update visibility for diff objects and players
+    LOG_FILTER_ACHIEVEMENT_UPDATES = 0x000008,              //  3 achievement update broadcasts
+    LOG_FILTER_WEATHER            = 0x000010,               //  4 weather changes
+    LOG_FILTER_PLAYER_STATS       = 0x000020,               //  5 player save data
+    LOG_FILTER_SQL_TEXT           = 0x000040,               //  6 raw SQL text send to DB engine
+    LOG_FILTER_PLAYER_MOVES       = 0x000080,               //  7 player moves by grid/cell
+    LOG_FILTER_PERIODIC_AFFECTS   = 0x000100,               //  8 DoT/HoT apply trace
+    LOG_FILTER_AI_AND_MOVEGENSS   = 0x000200,               //  9 AI/movement generators debug output
+    LOG_FILTER_DAMAGE             = 0x000400,               // 10 Direct/Area damage trace
+    LOG_FILTER_COMBAT             = 0x000800,               // 11 attack states/roll attack results/etc
+    LOG_FILTER_SPELL_CAST         = 0x001000,               // 12 spell cast/aura apply/spell proc events
+    LOG_FILTER_DB_STRICTED_CHECK  = 0x002000,               // 13 stricted DB data checks output (with possible false reports) for DB devs
+    LOG_FILTER_AHBOT_SELLER       = 0x004000,               // 14 Auction House Bot seller part
+    LOG_FILTER_AHBOT_BUYER        = 0x008000,               // 15 Auction House Bot buyer part
+    LOG_FILTER_PATHFINDING        = 0x010000,               // 16 Pathfinding
 };
 
-#define LOG_FILTER_COUNT            16
+#define LOG_FILTER_COUNT            17
 
 struct LogFilterData
 {
@@ -84,69 +85,69 @@ enum Color
     WHITE
 };
 
-const int Color_count = int(WHITE)+1;
+const int Color_count = int(WHITE) + 1;
 
 class Log : public MaNGOS::Singleton<Log, MaNGOS::ClassLevelLockable<Log, ACE_Thread_Mutex> >
 {
-    friend class MaNGOS::OperatorNew<Log>;
-    Log();
+        friend class MaNGOS::OperatorNew<Log>;
+        Log();
 
-    ~Log()
-    {
-        if( logfile != NULL )
-            fclose(logfile);
-        logfile = NULL;
+        ~Log()
+        {
+            if (logfile != NULL)
+                fclose(logfile);
+            logfile = NULL;
 
-        if( gmLogfile != NULL )
-            fclose(gmLogfile);
-        gmLogfile = NULL;
+            if (gmLogfile != NULL)
+                fclose(gmLogfile);
+            gmLogfile = NULL;
 
-        if (charLogfile != NULL)
-            fclose(charLogfile);
-        charLogfile = NULL;
+            if (charLogfile != NULL)
+                fclose(charLogfile);
+            charLogfile = NULL;
 
-        if( dberLogfile != NULL )
-            fclose(dberLogfile);
-        dberLogfile = NULL;
+            if (dberLogfile != NULL)
+                fclose(dberLogfile);
+            dberLogfile = NULL;
 
-        if (raLogfile != NULL)
-            fclose(raLogfile);
-        raLogfile = NULL;
+            if (raLogfile != NULL)
+                fclose(raLogfile);
+            raLogfile = NULL;
 
-        if (worldLogfile != NULL)
-            fclose(worldLogfile);
-        worldLogfile = NULL;
-    }
+            if (worldLogfile != NULL)
+                fclose(worldLogfile);
+            worldLogfile = NULL;
+        }
     public:
         void Initialize();
         void InitColors(const std::string& init_str);
 
-        void outCommand( uint32 account, const char * str, ...) ATTR_PRINTF(3,4);
+        void outCommand(uint32 account, const char* str, ...) ATTR_PRINTF(3, 4);
         void outString();                                   // any log level
-                                                            // any log level
-        void outString( const char * str, ... )      ATTR_PRINTF(2,3);
-                                                            // any log level
-        void outError( const char * err, ... )       ATTR_PRINTF(2,3);
-                                                            // log level >= 1
-        void outBasic( const char * str, ... )       ATTR_PRINTF(2,3);
-                                                            // log level >= 2
-        void outDetail( const char * str, ... )      ATTR_PRINTF(2,3);
-                                                            // log level >= 3
-        void outDebug( const char * str, ... )       ATTR_PRINTF(2,3);
+        // any log level
+        void outString(const char* str, ...)      ATTR_PRINTF(2, 3);
+        // any log level
+        void outError(const char* err, ...)       ATTR_PRINTF(2, 3);
+        // log level >= 1
+        void outBasic(const char* str, ...)       ATTR_PRINTF(2, 3);
+        // log level >= 2
+        void outDetail(const char* str, ...)      ATTR_PRINTF(2, 3);
+        // log level >= 3
+        void outDebug(const char* str, ...)       ATTR_PRINTF(2, 3);
 
         void outErrorDb();                                  // any log level
-                                                            // any log level
-        void outErrorDb( const char * str, ... )     ATTR_PRINTF(2,3);
-                                                            // any log level
-        void outChar( const char * str, ... )        ATTR_PRINTF(2,3);
-                                                            // any log level
-        void outWorldPacketDump( uint32 socket, uint32 opcode, char const* opcodeName, ByteBuffer const* packet, bool incoming );
         // any log level
-        void outCharDump( const char * str, uint32 account_id, uint32 guid, const char * name );
-        void outRALog( const char * str, ... )       ATTR_PRINTF(2,3);
+        void outErrorDb(const char* str, ...)     ATTR_PRINTF(2, 3);
+        // any log level
+        void outChar(const char* str, ...)        ATTR_PRINTF(2, 3);
+        // any log level
+        void outWorldPacketDump(uint32 socket, uint32 opcode, char const* opcodeName, ByteBuffer const* packet, bool incoming);
+        // any log level
+        void outCharDump(const char* str, uint32 account_id, uint32 guid, const char* name);
+        void outRALog(const char* str, ...)       ATTR_PRINTF(2, 3);
         uint32 GetLogLevel() const { return m_logLevel; }
-        void SetLogLevel(char * Level);
-        void SetLogFileLevel(char * Level);
+        void SetLogLevel(char* Level);
+        void SetLogFileLevel(char* Level);
         void SetColor(bool stdout_stream, Color color);
         void ResetColor(bool stdout_stream);
         void outTime();
@@ -160,7 +161,7 @@ class Log : public MaNGOS::Singleton<Log, MaNGOS::ClassLevelLockable<Log, ACE_Th
 
         static void WaitBeforeContinueIfNeed();
     private:
-        FILE* openLogFile(char const* configFileName,char const* configTimeStampFlag, char const* mode);
+        FILE* openLogFile(char const* configFileName, char const* configTimeStampFlag, char const* mode);
         FILE* openGmlogPerAccount(uint32 account);
 
         FILE* raLogfile;
@@ -169,6 +170,7 @@ class Log : public MaNGOS::Singleton<Log, MaNGOS::ClassLevelLockable<Log, ACE_Th
         FILE* charLogfile;
         FILE* dberLogfile;
         FILE* worldLogfile;
+        ACE_Thread_Mutex m_worldLogMtx;
 
         // log/console control
         LogLevel m_logLevel;
@@ -238,9 +240,9 @@ class Log : public MaNGOS::Singleton<Log, MaNGOS::ClassLevelLockable<Log, ACE_Th
     ERROR_DB_FILTER_LOG(LOG_FILTER_DB_STRICTED_CHECK, __VA_ARGS__)
 
 // primary for script library
-void MANGOS_DLL_SPEC outstring_log(const char * str, ...) ATTR_PRINTF(1,2);
-void MANGOS_DLL_SPEC detail_log(const char * str, ...) ATTR_PRINTF(1,2);
-void MANGOS_DLL_SPEC debug_log(const char * str, ...) ATTR_PRINTF(1,2);
-void MANGOS_DLL_SPEC error_log(const char * str, ...) ATTR_PRINTF(1,2);
-void MANGOS_DLL_SPEC error_db_log(const char * str, ...) ATTR_PRINTF(1,2);
+void MANGOS_DLL_SPEC outstring_log(const char* str, ...) ATTR_PRINTF(1, 2);
+void MANGOS_DLL_SPEC detail_log(const char* str, ...) ATTR_PRINTF(1, 2);
+void MANGOS_DLL_SPEC debug_log(const char* str, ...) ATTR_PRINTF(1, 2);
+void MANGOS_DLL_SPEC error_log(const char* str, ...) ATTR_PRINTF(1, 2);
+void MANGOS_DLL_SPEC error_db_log(const char* str, ...) ATTR_PRINTF(1, 2);
 #endif

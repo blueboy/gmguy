@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2011 MaNGOS <http://getmangos.com/>
+ * Copyright (C) 2005-2012 MaNGOS <http://getmangos.com/>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -115,7 +115,7 @@ enum FriendsResult
 
 class PlayerSocial
 {
-    friend class SocialMgr;
+        friend class SocialMgr;
     public:
         PlayerSocial();
         ~PlayerSocial();
@@ -143,13 +143,13 @@ class SocialMgr
         // Misc
         void RemovePlayerSocial(uint32 guid) { m_socialMap.erase(guid); }
 
-        void GetFriendInfo(Player *player, uint32 friendGUID, FriendInfo &friendInfo);
+        void GetFriendInfo(Player* player, uint32 friendGUID, FriendInfo& friendInfo);
         // Packet management
-        void MakeFriendStatusPacket(FriendsResult result, uint32 friend_guid, WorldPacket *data);
-        void SendFriendStatus(Player *player, FriendsResult result, ObjectGuid friend_guid, bool broadcast);
-        void BroadcastToFriendListers(Player *player, WorldPacket *packet);
+        void MakeFriendStatusPacket(FriendsResult result, uint32 friend_guid, WorldPacket* data);
+        void SendFriendStatus(Player* player, FriendsResult result, ObjectGuid friend_guid, bool broadcast);
+        void BroadcastToFriendListers(Player* player, WorldPacket* packet);
         // Loading
-        PlayerSocial *LoadFromDB(QueryResult *result, ObjectGuid guid);
+        PlayerSocial* LoadFromDB(QueryResult* result, ObjectGuid guid);
     private:
         SocialMap m_socialMap;
 };

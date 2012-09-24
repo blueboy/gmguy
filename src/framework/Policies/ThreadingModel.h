@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2011 MaNGOS <http://getmangos.com/>
+ * Copyright (C) 2005-2012 MaNGOS <http://getmangos.com/>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@ namespace MaNGOS
     {
         public:
 
-            GeneralLock(MUTEX &m)
+            GeneralLock(MUTEX& m)
                 : i_mutex(m)
             {
                 i_mutex.acquire();
@@ -46,9 +46,9 @@ namespace MaNGOS
 
         private:
 
-            GeneralLock(const GeneralLock &);
-            GeneralLock& operator=(const GeneralLock &);
-            MUTEX &i_mutex;
+            GeneralLock(const GeneralLock&);
+            GeneralLock& operator=(const GeneralLock&);
+            MUTEX& i_mutex;
     };
 
     template<class T>
@@ -87,7 +87,7 @@ namespace MaNGOS
             {
                 public:
 
-                    Lock(ObjectLevelLockable<T, MUTEX> &host)
+                    Lock(ObjectLevelLockable<T, MUTEX>& host)
                         : i_lock(host.i_mtx)
                     {
                     }
@@ -126,7 +126,7 @@ namespace MaNGOS
                         ClassLevelLockable<T, MUTEX>::si_mtx.acquire();
                     }
 
-                    Lock(const ClassLevelLockable<T, MUTEX> &)
+                    Lock(const ClassLevelLockable<T, MUTEX>&)
                     {
                         ClassLevelLockable<T, MUTEX>::si_mtx.acquire();
                     }

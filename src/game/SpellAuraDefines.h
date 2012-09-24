@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2011 MaNGOS <http://getmangos.com/>
+ * Copyright (C) 2005-2012 MaNGOS <http://getmangos.com/>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -220,7 +220,7 @@ enum AuraType
     SPELL_AURA_MOD_RESISTANCE_OF_STAT_PERCENT = 182,
     SPELL_AURA_MOD_CRITICAL_THREAT = 183,
     SPELL_AURA_MOD_ATTACKER_MELEE_HIT_CHANCE = 184,
-    SPELL_AURA_MOD_ATTACKER_RANGED_HIT_CHANCE= 185,
+    SPELL_AURA_MOD_ATTACKER_RANGED_HIT_CHANCE = 185,
     SPELL_AURA_MOD_ATTACKER_SPELL_HIT_CHANCE = 186,
     SPELL_AURA_MOD_ATTACKER_MELEE_CRIT_CHANCE = 187,
     SPELL_AURA_MOD_ATTACKER_RANGED_CRIT_CHANCE = 188,
@@ -339,7 +339,7 @@ enum AuraType
     SPELL_AURA_HEAL_ABSORB = 301,
     SPELL_AURA_302 = 302,
     SPELL_AURA_303 = 303,
-    SPELL_AURA_304 = 304,
+    SPELL_AURA_FAKE_INEBRIATE = 304,
     SPELL_AURA_MOD_MINIMUM_SPEED = 305,
     SPELL_AURA_306 = 306,
     SPELL_AURA_307 = 307,

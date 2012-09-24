@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2011 MaNGOS <http://getmangos.com/>
+ * Copyright (C) 2005-2012 MaNGOS <http://getmangos.com/>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,16 +18,17 @@
 
 #include "Common.h"
 
-char const* localeNames[MAX_LOCALE] = {
-  "enUS",                                                   // also enGB
-  "koKR",
-  "frFR",
-  "deDE",
-  "zhCN",
-  "zhTW",
-  "esES",
-  "esMX",
-  "ruRU"
+char const* localeNames[MAX_LOCALE] =
+{
+    "enUS",                                                 // also enGB
+    "koKR",
+    "frFR",
+    "deDE",
+    "zhCN",
+    "zhTW",
+    "esES",
+    "esMX",
+    "ruRU"
 };
 
 // used for search by name or iterate all names
@@ -48,8 +49,8 @@ LocaleNameStr const fullLocaleNameList[] =
 
 LocaleConstant GetLocaleByName(const std::string& name)
 {
-    for(LocaleNameStr const* itr = &fullLocaleNameList[0]; itr->name; ++itr)
-        if (name==itr->name)
+    for (LocaleNameStr const* itr = &fullLocaleNameList[0]; itr->name; ++itr)
+        if (name == itr->name)
             return itr->locale;
 
     return LOCALE_enUS;                                     // including enGB case

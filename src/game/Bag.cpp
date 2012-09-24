@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2011 MaNGOS <http://getmangos.com/>
+ * Copyright (C) 2005-2012 MaNGOS <http://getmangos.com/>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,8 +35,7 @@ Bag::Bag(): Item()
 Bag::~Bag()
 {
     for (int i = 0; i < MAX_BAG_SIZE; ++i)
-        if (m_bagslot[i])
-            delete m_bagslot[i];
+        delete m_bagslot[i];
 }
 
 void Bag::AddToWorld()
@@ -103,11 +102,9 @@ bool Bag::LoadFromDB(uint32 guidLow, Field* fields, ObjectGuid ownerGuid)
     for (int i = 0; i < MAX_BAG_SIZE; ++i)
     {
         SetGuidValue(CONTAINER_FIELD_SLOT_1 + (i * 2), ObjectGuid());
-        if (m_bagslot[i])
-        {
-            delete m_bagslot[i];
-            m_bagslot[i] = NULL;
-        }
+
+        delete m_bagslot[i];
+        m_bagslot[i] = NULL;
     }
 
     return true;
@@ -219,7 +216,7 @@ uint32 Bag::GetItemCountWithLimitCategory(uint32 limitCategory, Item* eItem) con
 
     for (uint32 i = 0; i < GetBagSize(); ++i)
         if (m_bagslot[i])
-            if (m_bagslot[i] != eItem && m_bagslot[i]->GetProto()->ItemLimitCategory == limitCategory )
+            if (m_bagslot[i] != eItem && m_bagslot[i]->GetProto()->ItemLimitCategory == limitCategory)
                 count += m_bagslot[i]->GetCount();
 
     return count;

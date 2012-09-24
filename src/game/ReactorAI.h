@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2011 MaNGOS <http://getmangos.com/>
+ * Copyright (C) 2005-2012 MaNGOS <http://getmangos.com/>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,15 +28,15 @@ class MANGOS_DLL_DECL ReactorAI : public CreatureAI
 {
     public:
 
-        explicit ReactorAI(Creature *c) : CreatureAI(c) {}
+        explicit ReactorAI(Creature* c) : CreatureAI(c) {}
 
-        void MoveInLineOfSight(Unit *);
-        void AttackStart(Unit *);
-        void EnterEvadeMode();
-        bool IsVisible(Unit *) const;
+        void MoveInLineOfSight(Unit*) override;
+        void AttackStart(Unit*) override;
+        void EnterEvadeMode() override;
+        bool IsVisible(Unit*) const override;
 
-        void UpdateAI(const uint32);
-        static int Permissible(const Creature *);
+        void UpdateAI(const uint32) override;
+        static int Permissible(const Creature*);
 
     private:
         ObjectGuid i_victimGuid;
