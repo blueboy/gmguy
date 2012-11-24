@@ -53,8 +53,8 @@
 #define NUM_DATABASES 3
 
 char remotes[NUM_REMOTES][MAX_REMOTE] = {
-    "git@github.com:mangos/mangos.git",
-    "git://github.com/mangos/mangos.git"        // used for fetch if present
+    "git@github.com:cmangos/mangos-wotlk.git",
+    "git://github.com/cmangos/mangos-wotlk.git"             // used for fetch if present
 };
 
 char remote_branch[MAX_REMOTE] = "master";
@@ -457,6 +457,14 @@ bool find_sql_updates()
     }
 
     pclose(cmd_pipe);
+
+    // Add last milestone's file information
+    last_sql_rev[0] = 11785;
+    last_sql_nr[0] = 2;
+    sscanf("11785_02_characters_instance", "%s", last_sql_update[0]);
+    last_sql_rev[2] = 10008;
+    last_sql_nr[2] = 1;
+    sscanf("10008_01_realmd_realmd_db_version", "%s", last_sql_update[2]);
 
     // remove updates from the last commit also found on origin
     snprintf(cmd, MAX_CMD, "git show %s:%s", origin_hash, sql_update_dir);

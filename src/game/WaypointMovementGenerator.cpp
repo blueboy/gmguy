@@ -75,26 +75,30 @@ void WaypointMovementGenerator<Creature>::LoadPath(Creature& creature)
             return;
         }
     }
-
-    StartMoveNow(creature);
 }
 
 void WaypointMovementGenerator<Creature>::Initialize(Creature& creature)
 {
+    creature.addUnitState(UNIT_STAT_ROAMING);
     LoadPath(creature);
-    creature.addUnitState(UNIT_STAT_ROAMING | UNIT_STAT_ROAMING_MOVE);
+
+    if (!creature.isAlive() || creature.hasUnitState(UNIT_STAT_NOT_MOVE))
+        return;
+
+    creature.addUnitState(UNIT_STAT_ROAMING_MOVE);
+    StartMoveNow(creature);
 }
 
 void WaypointMovementGenerator<Creature>::Finalize(Creature& creature)
 {
     creature.clearUnitState(UNIT_STAT_ROAMING | UNIT_STAT_ROAMING_MOVE);
-    creature.SetWalk(false);
+    creature.SetWalk(!creature.hasUnitState(UNIT_STAT_RUNNING_STATE), false);
 }
 
 void WaypointMovementGenerator<Creature>::Interrupt(Creature& creature)
 {
     creature.clearUnitState(UNIT_STAT_ROAMING | UNIT_STAT_ROAMING_MOVE);
-    creature.SetWalk(false);
+    creature.SetWalk(!creature.hasUnitState(UNIT_STAT_RUNNING_STATE), false);
 }
 
 void WaypointMovementGenerator<Creature>::Reset(Creature& creature)
@@ -185,7 +189,7 @@ void WaypointMovementGenerator<Creature>::StartMove(Creature& creature)
 
     if (node.orientation != 100 && node.delay != 0)
         init.SetFacing(node.orientation);
-    init.SetWalk(!creature.IsLevitating());
+    creature.SetWalk(!creature.hasUnitState(UNIT_STAT_RUNNING_STATE) && !creature.IsLevitating(), false);
     init.Launch();
 }
 
@@ -352,9 +356,7 @@ void FlightPathMovementGenerator::DoEventIfAny(Player& player, TaxiPathNodeEntry
     if (uint32 eventid = departure ? node.departureEventID : node.arrivalEventID)
     {
         DEBUG_FILTER_LOG(LOG_FILTER_AI_AND_MOVEGENSS, "Taxi %s event %u of node %u of path %u for player %s", departure ? "departure" : "arrival", eventid, node.index, node.path, player.GetName());
-
-        if (!sScriptMgr.OnProcessEvent(eventid, &player, &player, departure))
-            player.GetMap()->ScriptsStart(sEventScripts, eventid, &player, &player);
+        StartEvents_Event(player.GetMap(), eventid, &player, &player, departure);
     }
 }
 
